@@ -1,22 +1,21 @@
 import type { Database } from "~/types/database.types";
-
 type Service = Database["public"]["Tables"]["services"]["Row"];
 type ServiceInsert = Database["public"]["Tables"]["services"]["Insert"];
 type ServiceUpdate = Database["public"]["Tables"]["services"]["Update"];
 
-
 export const useServices = () => {
+  const { setLoading } = useLoading();
+
   const services = ref<Service[]>([]);
-  const loading = ref<boolean>(false);
   const error = ref<string | null>(null);
 
   /**
    * Fetch all services from the API
    */
   const fetchServices = async (): Promise<void> => {
-    loading.value = true;
+    setLoading(true);
     error.value = null;
-    
+
     try {
       const response = await fetch("/api/services");
 
@@ -27,12 +26,13 @@ export const useServices = () => {
       const data: Service[] = await response.json();
       services.value = data;
     } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : "Unknown error occurred";
+      const errorMessage =
+        e instanceof Error ? e.message : "Unknown error occurred";
       console.error("Error fetching services:", errorMessage);
       error.value = errorMessage;
       services.value = [];
     } finally {
-      loading.value = false;
+      setLoading(false);
     }
   };
 
@@ -41,8 +41,10 @@ export const useServices = () => {
    * @param serviceData - Service data to create
    * @returns The created service or null if failed
    */
-  const createService = async (serviceData: ServiceInsert): Promise<Service | null> => {
-    loading.value = true;
+  const createService = async (
+    serviceData: ServiceInsert
+  ): Promise<Service | null> => {
+    setLoading(true);
     error.value = null;
 
     try {
@@ -56,22 +58,26 @@ export const useServices = () => {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Error ${response.status}: Failed to create service`);
+        throw new Error(
+          errorData.message ||
+            `Error ${response.status}: Failed to create service`
+        );
       }
 
       const newService: Service = await response.json();
-      
+
       // Add the new service to the list
       services.value = [...services.value, newService];
-      
+
       return newService;
     } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : "Unknown error occurred";
+      const errorMessage =
+        e instanceof Error ? e.message : "Unknown error occurred";
       console.error("Error creating service:", errorMessage);
       error.value = errorMessage;
       return null;
     } finally {
-      loading.value = false;
+      setLoading(false);
     }
   };
 
@@ -81,8 +87,11 @@ export const useServices = () => {
    * @param serviceData - Partial service data to update
    * @returns The updated service or null if failed
    */
-  const updateService = async (id: number, serviceData: ServiceUpdate): Promise<Service | null> => {
-    loading.value = true;
+  const updateService = async (
+    id: number,
+    serviceData: ServiceUpdate
+  ): Promise<Service | null> => {
+    setLoading(true);
     error.value = null;
 
     try {
@@ -96,7 +105,10 @@ export const useServices = () => {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Error ${response.status}: Failed to update service`);
+        throw new Error(
+          errorData.message ||
+            `Error ${response.status}: Failed to update service`
+        );
       }
 
       const updatedServices: Service[] = await response.json();
@@ -113,12 +125,13 @@ export const useServices = () => {
 
       return updatedService;
     } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : "Unknown error occurred";
+      const errorMessage =
+        e instanceof Error ? e.message : "Unknown error occurred";
       console.error("Error updating service:", errorMessage);
       error.value = errorMessage;
       return null;
     } finally {
-      loading.value = false;
+      setLoading(false);
     }
   };
 
@@ -128,7 +141,7 @@ export const useServices = () => {
    * @returns true if successful, false otherwise
    */
   const deleteService = async (id: number): Promise<boolean> => {
-    loading.value = true;
+    setLoading(true);
     error.value = null;
 
     try {
@@ -138,7 +151,10 @@ export const useServices = () => {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Error ${response.status}: Failed to delete service`);
+        throw new Error(
+          errorData.message ||
+            `Error ${response.status}: Failed to delete service`
+        );
       }
 
       // Remove the service from the list
@@ -146,18 +162,18 @@ export const useServices = () => {
 
       return true;
     } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : "Unknown error occurred";
+      const errorMessage =
+        e instanceof Error ? e.message : "Unknown error occurred";
       console.error("Error deleting service:", errorMessage);
       error.value = errorMessage;
       return false;
     } finally {
-      loading.value = false;
+      setLoading(false);
     }
   };
 
   return {
     services,
-    loading,
     error,
     fetchServices,
     createService,
