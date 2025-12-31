@@ -1,12 +1,14 @@
 import type { Database } from "~/types/database.types";
-type Service = Database["public"]["Tables"]["services"]["Row"];
-type ServiceInsert = Database["public"]["Tables"]["services"]["Insert"];
-type ServiceUpdate = Database["public"]["Tables"]["services"]["Update"];
+import type {
+  Service,
+  ServiceInsert,
+  ServiceUpdate,
+} from "~/types/service.types";
 
 export const useServices = () => {
   const { setLoading } = useLoading();
 
-  const services = ref<Service[]>([]);
+  const services = useState<Service[]>("services", () => []);
   const error = ref<string | null>(null);
 
   /**
@@ -77,6 +79,7 @@ export const useServices = () => {
       error.value = errorMessage;
       return null;
     } finally {
+      await fetchServices();
       setLoading(false);
     }
   };
@@ -131,6 +134,7 @@ export const useServices = () => {
       error.value = errorMessage;
       return null;
     } finally {
+      await fetchServices();
       setLoading(false);
     }
   };

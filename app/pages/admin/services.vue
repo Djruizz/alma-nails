@@ -3,7 +3,7 @@ definePageMeta({
   layout: "admin",
 });
 const { services, error, fetchServices, createService } = useServices();
-
+const { openCreateModal } = useServiceModal();
 onMounted(() => {
   fetchServices();
 });
@@ -23,12 +23,7 @@ onMounted(() => {
             label="Nuevo Servicio"
             class="w-full"
             @click="
-              createService({
-                name: 'Nuevo Servicio',
-                price: 40,
-                duration_min: 30,
-                is_active: true,
-              })
+              openCreateModal()
             "
           />
         </template>
@@ -68,5 +63,6 @@ onMounted(() => {
         </div>
       </div>
     </UPage>
+    <ServicesModal />
   </UContainer>
 </template>

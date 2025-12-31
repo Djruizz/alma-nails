@@ -3,6 +3,7 @@ const { updateService, deleteService } = useServices();
 import { formatDuration } from "~/utils/format";
 import { type Database } from "~/types/database.types";
 type Service = Database["public"]["Tables"]["services"]["Row"];
+const { openEditModal } = useServiceModal();
 
 defineProps<{
   service: Service;
@@ -43,6 +44,7 @@ defineProps<{
           variant="ghost"
           size="sm"
           label="Editar"
+          @click="openEditModal(service)"
         />
         <UButton
           icon="i-heroicons-trash"
