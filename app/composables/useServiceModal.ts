@@ -18,9 +18,9 @@ export const useServiceModal = () => {
 
   const closeModal = () => {
     isOpen.value = false;
-    mode.value = "create";
     setTimeout(()=>{
       service.value = undefined;
+      mode.value = "create";
     }, 300)
   };
 
