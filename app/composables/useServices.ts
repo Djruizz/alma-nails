@@ -16,6 +16,11 @@ export const useServices = () => {
    */
   const fetchServices = async (): Promise<void> => {
     setLoading(true);
+    if (services.value.length > 0) {
+      setLoading(false);
+      return;
+    };
+
     error.value = null;
 
     try {
@@ -79,7 +84,6 @@ export const useServices = () => {
       error.value = errorMessage;
       return null;
     } finally {
-      await fetchServices();
       setLoading(false);
     }
   };
@@ -105,22 +109,19 @@ export const useServices = () => {
         },
         body: JSON.stringify(serviceData),
       });
-
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
           errorData.message ||
-            `Error ${response.status}: Failed to update service`
+          `Error ${response.status}: Failed to update service`
         );
       }
-
-      const updatedServices: Service[] = await response.json();
-      const updatedService = updatedServices[0];
+      
+      const updatedService: Service = await response.json();
 
       if (!updatedService) {
         throw new Error("Service not found in response");
       }
-
       // Update the service in the list
       services.value = services.value.map((service) =>
         service.id === id ? updatedService : service
@@ -134,7 +135,6 @@ export const useServices = () => {
       error.value = errorMessage;
       return null;
     } finally {
-      await fetchServices();
       setLoading(false);
     }
   };

@@ -58,7 +58,6 @@ export default defineEventHandler(async (event): Promise<Service> => {
     .update(body)
     .eq("id", numericId)
     .select()
-    .returns<Service[]>();
 
   if (error) {
     throw createError({ 
@@ -75,6 +74,6 @@ export default defineEventHandler(async (event): Promise<Service> => {
       message: "No se encontró el servicio para actualizar",
     });
   }
-
+  
   return services[0];
 });

@@ -2,11 +2,9 @@
 definePageMeta({
   layout: "admin",
 });
-const { services, error, fetchServices, createService } = useServices();
+const { services, error, fetchServices } = useServices();
 const { openCreateModal } = useServiceModal();
-onMounted(() => {
-  fetchServices();
-});
+onMounted(() => fetchServices());
 </script>
 
 <template>
